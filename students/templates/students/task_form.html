@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% if task %}Edit Task{% else %}Add Task{% endif %}</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #1a4731; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .btn { padding: 10px 15px; background: #1a4731; color: white; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn-secondary { background: #6c757d; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>{% if task %}Edit Assessment Task{% else %}Create Assessment Task{% endif %}</h2>
+    
+    {% if messages %}
+        {% for msg in messages %}
+            <div style="padding: 10px; background: #f2dede; color: #a94442; margin-bottom: 15px; border-radius: 4px;">{{ msg }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>Linked Competency (Required)</label>
+            <select name="competency_id" required>
+                <option value="">-- Select Competency --</option>
+                {% for comp in competencies %}
+                    <option value="{{ comp.id }}" {% if task.competency.id == comp.id %}selected{% endif %}>{{ comp.competency_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Task Title</label>
+            <input type="text" name="task_title" value="{{ task.task_title|default_if_none:'' }}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Task Description</label>
+            <textarea name="task_description" rows="4" required>{{ task.task_description|default_if_none:'' }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Task Date</label>
+            <input type="date" name="task_date" value="{{ task.task_date|date:'Y-m-d'|default_if_none:'' }}" required>
+        </div>
+
+        <button type="submit" class="btn">Save Task</button>
+        <a href="{% url 'task_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+</body>
+</html>

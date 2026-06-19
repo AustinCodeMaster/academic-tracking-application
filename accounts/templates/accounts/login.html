@@ -6,10 +6,15 @@
     <title>AcadTrack Login</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f5f7f5; display: flex; height: 100vh; }
+        body { font-family: 'Segoe UI', sans-serif; background: #e8f0eb; display: flex; align-items: center; justify-content: center; height: 100vh; }
+
+        .login-container {
+            display: flex; width: 100%; max-width: 900px; height: 520px;
+            background: #fff; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); overflow: hidden;
+        }
 
         .left-panel {
-            width: 42%; background: #1a4731; display: flex;
+            width: 45%; background: #1a4731; display: flex;
             flex-direction: column; justify-content: space-between; padding: 48px 40px;
         }
         .brand-name { font-size: 22px; color: #fff; font-weight: 600; }
@@ -51,8 +56,9 @@
 </head>
 <body>
 
-<div class="left-panel">
-    <div class="brand-name">
+<div class="login-container">
+    <div class="left-panel">
+        <div class="brand-name">
         AcadTrack
         <span>Academic Performance System</span>
     </div>
@@ -86,15 +92,16 @@
             {% csrf_token %}
 
             <div class="role-toggle">
-                <button type="button" class="role-btn active" id="btn-teacher" onclick="setRole('teacher')">Teacher</button>
-                <button type="button" class="role-btn" id="btn-admin" onclick="setRole('admin')">Admin</button>
+                <button type="button" class="role-btn active" id="btn-Administrator" onclick="setRole('Administrator')">Admin</button>
+                <button type="button" class="role-btn" id="btn-Teacher" onclick="setRole('Teacher')">Teacher</button>
+                <button type="button" class="role-btn" id="btn-Learner" onclick="setRole('Learner')">Learner</button>
             </div>
 
-            <input type="hidden" name="role" id="role-input" value="teacher">
+            <input type="hidden" name="role" id="role-input" value="Administrator">
 
             <div class="field">
-                <label>Email address</label>
-                <input type="email" name="email" placeholder="e.g. teacher@school.ac.ke" required>
+                <label>Username</label>
+                <input type="text" name="username" placeholder="Enter your username" required>
             </div>
 
             <div class="field">
@@ -108,11 +115,13 @@
         <div class="footer-note">Having trouble? Contact your system administrator.</div>
     </div>
 </div>
+</div>
 
 <script>
     function setRole(role) {
-        document.getElementById('btn-teacher').classList.toggle('active', role === 'teacher');
-        document.getElementById('btn-admin').classList.toggle('active', role === 'admin');
+        document.getElementById('btn-Administrator').classList.toggle('active', role === 'Administrator');
+        document.getElementById('btn-Teacher').classList.toggle('active', role === 'Teacher');
+        document.getElementById('btn-Learner').classList.toggle('active', role === 'Learner');
         document.getElementById('role-input').value = role;
     }
 </script>

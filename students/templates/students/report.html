@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Academic Reports</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .btn { padding: 8px 12px; background: #1a4731; color: white; text-decoration: none; border-radius: 4px; border: none; cursor: pointer; }
+        .btn-secondary { background: #6c757d; }
+        
+        .filters { background: #e8f0eb; padding: 15px; border-radius: 6px; margin-bottom: 20px; display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end; }
+        .filter-group { display: flex; flex-direction: column; }
+        .filter-group label { font-size: 12px; font-weight: bold; color: #1a4731; margin-bottom: 5px; }
+        .filter-group select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; min-width: 150px; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        th { background: #1a4731; color: white; font-size: 14px; }
+        td { font-size: 14px; }
+        .badge { padding: 3px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; display: inline-block; background: #e1f5fe; color: #0277bd; }
+        
+        .print-btn { background: #0277bd; margin-bottom: 10px; }
+        
+        @media print {
+            .filters, .header a, .print-btn { display: none; }
+            .container { box-shadow: none; padding: 0; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h2>Learner Performance Reports</h2>
+        <a href="{% url 'teacher_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+    
+    <div class="filters">
+        <form method="GET" style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end; width: 100%;">
+            <div class="filter-group">
+                <label>Filter by Competency</label>
+                <select name="competency_id">
+                    <option value="">All Competencies</option>
+                    {% for comp in competencies %}
+                        <option value="{{ comp.id }}" {% if selected_competency == comp.id|stringformat:"s" %}selected{% endif %}>{{ comp.competency_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label>Filter by Task</label>
+                <select name="task_id">
+                    <option value="">All Tasks</option>
+                    {% for task in tasks %}
+                        <option value="{{ task.id }}" {% if selected_task == task.id|stringformat:"s" %}selected{% endif %}>{{ task.task_title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label>Filter by Rating</label>
+                <select name="rating">
+                    <option value="">All Ratings</option>
+                    {% for r in ratings %}
+                        <option value="{{ r }}" {% if selected_rating == r %}selected{% endif %}>{{ r }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <button type="submit" class="btn">Generate Report</button>
+            <a href="{% url 'report_view' %}" class="btn btn-secondary">Clear Filters</a>
+        </form>
+    </div>
+
+    <button onclick="window.print()" class="btn print-btn">Print Report</button>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Learner</th>
+                <th>Admission No</th>
+                <th>Class</th>
+                <th>Competency</th>
+                <th>Task</th>
+                <th>Score</th>
+                <th>Rating</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for result in results %}
+            <tr>
+                <td><strong>{{ result.learner.full_name }}</strong></td>
+                <td>{{ result.learner.admission_number }}</td>
+                <td>{{ result.learner.class_name }}</td>
+                <td>{{ result.task.competency.competency_name }}</td>
+                <td>{{ result.task.task_title }}</td>
+                <td>{% if result.score %}{{ result.score }}{% else %}-{% endif %}</td>
+                <td><span class="badge">{{ result.rating }}</span></td>
+                <td>{{ result.assessment_date|date:"d M Y" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" style="text-align: center; color: #666; padding: 20px;">No results found matching your filters.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

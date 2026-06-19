@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Assessment Tasks</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        th { background: #1a4731; color: white; }
+        .btn { padding: 8px 12px; background: #1a4731; color: white; text-decoration: none; border-radius: 4px; }
+        .btn-danger { background: #d9534f; color: white; text-decoration: none; padding: 4px 8px; border-radius: 4px; border: none; cursor: pointer; }
+        .btn-edit { background: #5bc0de; color: white; text-decoration: none; padding: 4px 8px; border-radius: 4px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h2>Assessment Task Management</h2>
+        <div>
+            <a href="{% url 'task_create' %}" class="btn">+ Add Task</a>
+            <a href="{% url 'teacher_dashboard' %}" class="btn" style="background:#555;">Back to Dashboard</a>
+        </div>
+    </div>
+    
+    {% if messages %}
+        {% for msg in messages %}
+            <div style="padding: 10px; background: #dff0d8; color: #3c763d; margin-bottom: 15px; border-radius: 4px;">{{ msg }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Competency</th>
+                <th>Due Date</th>
+                <th>Created By</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td>{{ task.task_title }}</td>
+                <td>{{ task.competency.competency_name }}</td>
+                <td>{{ task.task_date|date:"M d, Y" }}</td>
+                <td>{{ task.teacher.get_full_name|default:task.teacher.username }}</td>
+                <td>
+                    <a href="{% url 'task_update' task.pk %}" class="btn-edit">Edit</a>
+                    <a href="{% url 'task_delete' task.pk %}" class="btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center;">No assessment tasks found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

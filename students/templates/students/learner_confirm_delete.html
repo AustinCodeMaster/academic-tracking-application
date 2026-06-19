@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Learner</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; padding: 20px; }
+        .container { max-width: 500px; margin: 50px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; }
+        .btn { padding: 10px 15px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; }
+        .btn-danger { background: #d9534f; color: white; }
+        .actions { margin-top: 20px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Delete Learner Profile?</h2>
+    <p>Are you sure you want to delete the learner record for <strong>{{ learner.full_name }} ({{ learner.admission_number }})</strong>?</p>
+    <p style="color:red; font-size:12px;">This action cannot be undone and will also delete all assessment results linked to this learner.</p>
+    
+    <form method="POST" class="actions">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+        <a href="{% url 'learner_list' %}" class="btn">Cancel</a>
+    </form>
+</div>
+</body>
+</html>

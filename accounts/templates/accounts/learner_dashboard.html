@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learner Dashboard - AcadTrack</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #e8f0eb; margin: 0; padding: 0; }
+        .header { background: #1a4731; color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .content { padding: 40px; max-width: 1000px; margin: 0 auto; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        th { background: #f4f7f6; color: #1a4731; }
+        .rating-badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; display: inline-block; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>AcadTrack - Learner Portal</h2>
+        <div>
+            <span>Welcome, {{ request.user.username }}</span>
+            <a href="{% url 'logout' %}" style="color: white; margin-left: 15px;">Logout</a>
+        </div>
+    </div>
+    <div class="content">
+        <div class="card">
+            <h3>Your Academic Profile</h3>
+            {% if profile %}
+                <p><strong>Name:</strong> {{ profile.full_name }}</p>
+                <p><strong>Admission No:</strong> {{ profile.admission_number }} | <strong>Class:</strong> {{ profile.class_name }}</p>
+            {% else %}
+                <p style="color: red;">Your account is not linked to a Learner Profile yet. Please contact your teacher.</p>
+            {% endif %}
+        </div>
+
+        {% if profile %}
+        <div class="card">
+            <h3>Assessment Results & Feedback</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Task / Competency</th>
+                        <th>Score</th>
+                        <th>Rating</th>
+                        <th>Teacher Feedback</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                    <tr>
+                        <td>{{ result.assessment_date|date:"d M Y" }}</td>
+                        <td><strong>{{ result.task.task_title }}</strong><br><small style="color:#666;">{{ result.task.competency.competency_name }}</small></td>
+                        <td>{% if result.score %}{{ result.score }}{% else %}-{% endif %}</td>
+                        <td>
+                            <span class="rating-badge" style="background: #e1f5fe; color: #1a4731;">{{ result.rating }}</span>
+                        </td>
+                        <td>{{ result.feedback }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #666;">No assessment results have been recorded for you yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
